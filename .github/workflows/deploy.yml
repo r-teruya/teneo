@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          PUBLIC_URL: /リポジトリ名
+          PUBLIC_URL: /teneo
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
