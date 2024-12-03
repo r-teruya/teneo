@@ -49,13 +49,33 @@ const Sidebar = () => {
 
   const drawerContent = (
     <>
-      <Box sx={{ p: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <AccountBalanceIcon color="primary" />
-          <Typography variant="h6" component="h1">
-            投資ファンド管理
-          </Typography>
-        </Box>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        alignItems: 'center',
+        pt: 2,
+        pb: 1,
+      }}>
+        <Box
+          component="img"
+          src={`${process.env.PUBLIC_URL}/images/logo.png`}
+          alt="Logo"
+          sx={{
+            height: 40,
+            width: 'auto',
+            mb: 1,
+          }}
+        />
+        <Typography 
+          variant="subtitle2" 
+          color="text.secondary"
+          sx={{ 
+            fontSize: '0.75rem',
+            letterSpacing: '0.1em',
+          }}
+        >
+          投資ファンド管理
+        </Typography>
       </Box>
       <List>
         {MENU_ITEMS.map((item) => (
@@ -103,9 +123,15 @@ const Sidebar = () => {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" color="text.primary" noWrap>
-              投資ファンド管理
-            </Typography>
+            <Box
+              component="img"
+              src={`${process.env.PUBLIC_URL}/images/logo.png`}
+              alt="Logo"
+              sx={{
+                height: 32,
+                width: 'auto',
+              }}
+            />
           </Toolbar>
         </AppBar>
       )}
