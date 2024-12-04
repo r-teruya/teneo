@@ -103,9 +103,76 @@ const TransactionHistory = () => {
     }
   });
 
+  // モバイル用のトランザクションカード
+  const MobileTransactionCard = ({ transaction }: { transaction: Transaction }) => (
+    <Card sx={{ mb: 1 }}>
+      <CardContent sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+          <Typography variant="caption" color="text.secondary">
+            {transaction.date}
+          </Typography>
+          <Chip
+            label={transaction.status}
+            color={getStatusColor(transaction.status)}
+            size="small"
+            sx={{ 
+              height: 20,
+              '& .MuiChip-label': {
+                px: 1,
+                fontSize: '0.75rem',
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          {getTypeIcon(transaction.type)}
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            {transaction.type}
+          </Typography>
+        </Box>
+
+        {transaction.fundName && (
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ mb: 1 }}
+          >
+            {transaction.fundName}
+          </Typography>
+        )}
+
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Box>
+            {transaction.units && (
+              <Typography variant="body2" color="text.secondary">
+                {transaction.units.toLocaleString()}口
+              </Typography>
+            )}
+          </Box>
+          <Typography 
+            variant="body1"
+            sx={{ 
+              fontWeight: 500,
+              color: transaction.type === '購入' || transaction.type === '出金' 
+                ? 'error.main' 
+                : 'success.main',
+            }}
+          >
+            {transaction.type === '購入' || transaction.type === '出金' ? '-' : '+'}
+            ¥{transaction.amount.toLocaleString()}
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <Container maxWidth="lg">
-      <Box sx={{ py: { xs: 2, sm: 3 } }}>
+      <Box sx={{ 
+        py: { xs: 2, sm: 3 },
+        mt: { xs: '64px', sm: 0 },  // ヘッダーの高さ分のマージン
+      }}>
         <Typography 
           variant="h5" 
           gutterBottom
@@ -140,87 +207,97 @@ const TransactionHistory = () => {
             p: { xs: 1.5, sm: 2, md: 3 },
             '&:last-child': { pb: { xs: 1.5, sm: 2, md: 3 } },
           }}>
-            <TableContainer sx={{ 
-              overflow: 'auto',
-              maxHeight: { xs: 'calc(100vh - 300px)', sm: 'calc(100vh - 350px)' },
-            }}>
-              <Table size={isMobile ? "small" : "medium"}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>日付</TableCell>
-                    <TableCell>取引種別</TableCell>
-                    <TableCell>ファンド名</TableCell>
-                    <TableCell align="right">口数</TableCell>
-                    <TableCell align="right">金額</TableCell>
-                    <TableCell align="center">状態</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredTransactions.map((transaction) => (
-                    <TableRow
-                      key={transaction.id}
-                      sx={{
-                        '&:hover': { bgcolor: 'action.hover' },
-                      }}
-                    >
-                      <TableCell>
-                        <Typography sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          {transaction.date}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {getTypeIcon(transaction.type)}
-                          <Typography sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                            {transaction.type}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography 
-                          sx={{ 
-                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                            color: transaction.fundName ? 'text.primary' : 'text.secondary',
-                          }}
-                        >
-                          {transaction.fundName || '-'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right">
-                        <Typography sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                          {transaction.units ? `${transaction.units.toLocaleString()}口` : '-'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="right">
-                        <Typography 
-                          sx={{ 
-                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                            fontWeight: 500,
-                            color: transaction.type === '購入' || transaction.type === '出金' 
-                              ? 'error.main' 
-                              : 'success.main',
-                          }}
-                        >
-                          {transaction.type === '購入' || transaction.type === '出金' ? '-' : '+'}
-                          ¥{transaction.amount.toLocaleString()}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Chip
-                          label={transaction.status}
-                          color={getStatusColor(transaction.status)}
-                          size={isMobile ? "small" : "medium"}
-                          sx={{ 
-                            minWidth: 80,
-                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                          }}
-                        />
-                      </TableCell>
+            {isMobile ? (
+              // モバイル表示
+              <Box>
+                {filteredTransactions.map((transaction) => (
+                  <MobileTransactionCard 
+                    key={transaction.id} 
+                    transaction={transaction}
+                  />
+                ))}
+              </Box>
+            ) : (
+              // デスクトップ表示（既存のテーブル）
+              <TableContainer>
+                <Table size={isMobile ? "small" : "medium"}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>日付</TableCell>
+                      <TableCell>取引種別</TableCell>
+                      <TableCell>ファンド名</TableCell>
+                      <TableCell align="right">口数</TableCell>
+                      <TableCell align="right">金額</TableCell>
+                      <TableCell align="center">状態</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {filteredTransactions.map((transaction) => (
+                      <TableRow
+                        key={transaction.id}
+                        sx={{
+                          '&:hover': { bgcolor: 'action.hover' },
+                        }}
+                      >
+                        <TableCell>
+                          <Typography sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                            {transaction.date}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            {getTypeIcon(transaction.type)}
+                            <Typography sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                              {transaction.type}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography 
+                            sx={{ 
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              color: transaction.fundName ? 'text.primary' : 'text.secondary',
+                            }}
+                          >
+                            {transaction.fundName || '-'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Typography sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                            {transaction.units ? `${transaction.units.toLocaleString()}口` : '-'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Typography 
+                            sx={{ 
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              fontWeight: 500,
+                              color: transaction.type === '購入' || transaction.type === '出金' 
+                                ? 'error.main' 
+                                : 'success.main',
+                            }}
+                          >
+                            {transaction.type === '購入' || transaction.type === '出金' ? '-' : '+'}
+                            ¥{transaction.amount.toLocaleString()}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Chip
+                            label={transaction.status}
+                            color={getStatusColor(transaction.status)}
+                            size={isMobile ? "small" : "medium"}
+                            sx={{ 
+                              minWidth: 80,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </CardContent>
         </Card>
       </Box>

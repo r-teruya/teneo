@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { getFundWithPosition } from '../../data/funds';
 import FundPerformanceChart from './FundPerformanceChart';
+import PerformanceTable from '../dashboard/PerformanceTable';
 
 const FundDetail = () => {
   const { fundId } = useParams<{ fundId: string }>();
@@ -33,6 +34,18 @@ const FundDetail = () => {
     );
   }
 
+  // パフォーマンスデータ
+  const performanceData = [
+    { period: '直近', return: 2.5, risk: 12.3, sharpe: 0.8 },
+    { period: '1ヶ月', return: 5.8, risk: 11.8, sharpe: 1.2 },
+    { period: '3ヶ月', return: 8.2, risk: 11.5, sharpe: 1.4 },
+    { period: '6ヶ月', return: 15.2, risk: 12.1, sharpe: 1.6 },
+    { period: '1年', return: 45.5, risk: 13.2, sharpe: 1.8 },
+    { period: '3年', return: 82.3, risk: 12.8, sharpe: 1.9 },
+    { period: '5年', return: 120.5, risk: 13.5, sharpe: 1.7 },
+    { period: '創設来', return: 150.2, risk: 13.8, sharpe: 1.6 },
+  ];
+
   return (
     <Container maxWidth="lg">
       <Box sx={{ 
@@ -40,6 +53,7 @@ const FundDetail = () => {
         flexDirection: 'column', 
         gap: { xs: 2, sm: 3 },
         py: { xs: 2, sm: 3 },
+        mt: { xs: '64px', sm: 0 }
       }}>
         {/* ファンド概要 */}
         <Card>
@@ -168,6 +182,24 @@ const FundDetail = () => {
 
         {/* パフォーマンスチャート */}
         <FundPerformanceChart fundId={fundWithPosition.id} />
+
+        {/* パフォーマンス分析テーブル */}
+        <Card sx={{ mt: { xs: 2, sm: 3 } }}>
+          <CardContent>
+            <Typography 
+              variant="h6" 
+              gutterBottom
+              sx={{ 
+                fontSize: { xs: '1rem', sm: '1.25rem' },
+                fontWeight: 500,
+                mb: 2,
+              }}
+            >
+              パフォーマンス分析
+            </Typography>
+            <PerformanceTable data={performanceData} />
+          </CardContent>
+        </Card>
       </Box>
     </Container>
   );

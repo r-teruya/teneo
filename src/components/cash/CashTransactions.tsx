@@ -73,7 +73,10 @@ const CashTransactions = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ py: { xs: 2, sm: 3 } }}>
+      <Box sx={{ 
+        py: { xs: 2, sm: 3 },
+        mt: { xs: '64px', sm: 0 }  // 64pxはAppBarの高さ
+      }}>
         <Typography 
           variant="h5" 
           gutterBottom

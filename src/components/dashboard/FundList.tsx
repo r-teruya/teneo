@@ -16,6 +16,7 @@ import {
   useTheme,
   useMediaQuery,
   Grid,
+  Stack,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -49,105 +50,93 @@ const FundList = () => {
     navigate('/funds/new');
   };
 
-  const MobileListItem = ({ fund }: { fund: FundWithPosition }) => (
-    <Box
-      sx={{
-        p: 1.5,
-        borderBottom: 1,
-        borderColor: 'divider',
-      }}
-    >
-      <Box sx={{ mb: 1 }}>
-        <Typography 
-          sx={{ 
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            mb: 0.5,
-          }}
-        >
-          {fund.name}
-        </Typography>
-        <Chip
-          label={fund.type}
-          size="small"
-          sx={{ 
-            fontSize: '0.75rem',
-            height: 20,
-          }}
-        />
-      </Box>
+  const MobileView = () => (
+    <Stack spacing={2}>
+      {fundsWithPositions.map((fund) => (
+        <Card key={fund.id}>
+          <CardContent sx={{ p: 2 }}>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 1 }}>
+                {fund.name}
+              </Typography>
+              <Chip 
+                label={fund.type} 
+                size="small" 
+                sx={{ fontSize: '0.75rem' }}
+              />
+            </Box>
 
-      <Grid container spacing={1} sx={{ mb: 1.5 }}>
-        <Grid item xs={6}>
-          <Typography variant="caption" color="text.secondary">
-            基準価額
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem' }}>
-            ¥{(fund.currentValue / fund.units).toLocaleString()}
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="caption" color="text.secondary">
-            評価額
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem' }}>
-            ¥{fund.currentValue.toLocaleString()}
-          </Typography>
-        </Grid>
-      </Grid>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={6}>
+                <Typography variant="caption" color="text.secondary">
+                  基準価額
+                </Typography>
+                <Typography variant="body2">
+                  ¥{(fund.currentValue / fund.units).toLocaleString()}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="caption" color="text.secondary">
+                  評価額
+                </Typography>
+                <Typography variant="body2">
+                  ¥{fund.currentValue.toLocaleString()}
+                </Typography>
+              </Grid>
+            </Grid>
 
-      <Box sx={{ 
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <Typography 
-          sx={{ 
-            fontSize: '0.875rem',
-            color: fund.unrealizedGain >= 0 ? 'success.main' : 'error.main',
-          }}
-        >
-          損益: {fund.unrealizedGain >= 0 ? '+' : ''}{fund.unrealizedGainPercent}%
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <IconButton
-            size="small"
-            onClick={() => handleBuy(fund.id)}
-            sx={{ color: 'success.main' }}
-          >
-            <AddIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => handleSell(fund.id)}
-            sx={{ color: 'error.main' }}
-          >
-            <RemoveIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => handleShowDetails(fund.id)}
-            color="primary"
-          >
-            <InfoIcon fontSize="small" />
-          </IconButton>
-        </Box>
-      </Box>
-    </Box>
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <Typography 
+                sx={{ 
+                  color: fund.unrealizedGain >= 0 ? 'success.main' : 'error.main',
+                  fontSize: '0.875rem',
+                }}
+              >
+                {fund.unrealizedGain >= 0 ? '+' : ''}{fund.unrealizedGainPercent}%
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <IconButton
+                  size="small"
+                  onClick={() => handleBuy(fund.id)}
+                  sx={{ color: 'success.main' }}
+                >
+                  <AddIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => handleSell(fund.id)}
+                  sx={{ color: 'error.main' }}
+                >
+                  <RemoveIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => handleShowDetails(fund.id)}
+                  color="primary"
+                >
+                  <InfoIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      ))}
+    </Stack>
   );
 
   return (
     <Card>
-      <CardContent sx={{ 
-        p: { xs: 0, sm: 2, md: 3 },
-        '&:last-child': { pb: { xs: 0, sm: 2, md: 3 } },
-      }}>
+      <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3 } }}>
         <Box sx={{ 
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           mb: 2,
-          px: 2,
+          px: { xs: 1, sm: 0 },
         }}>
           <Typography 
             variant="h6"
@@ -169,11 +158,7 @@ const FundList = () => {
         </Box>
 
         {isMobile ? (
-          <Box>
-            {fundsWithPositions.map((fund) => (
-              <MobileListItem key={fund.id} fund={fund} />
-            ))}
-          </Box>
+          <MobileView />
         ) : (
           <TableContainer>
             <Table>

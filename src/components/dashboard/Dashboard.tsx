@@ -13,7 +13,9 @@ const Dashboard = () => {
     <Container 
       maxWidth="xl"
       sx={{
-        px: { xs: 1, sm: 2, md: 3 },  // 横パディングを調整
+        px: { xs: 1, sm: 2, md: 3 },
+        mt: { xs: '64px', sm: 0 },
+        overflow: 'hidden',
       }}
     >
       <Box sx={{ 
@@ -36,17 +38,8 @@ const Dashboard = () => {
         </Box>
 
         {/* ファンド一覧 */}
-        <Box sx={{ 
-          overflowX: 'auto',
-          mx: isMobile ? -1 : 0,  // モバイルでは左右マージンをネガティブに
-          pb: isMobile ? 1 : 0,   // スクロールバーのスペース
-        }}>
-          <Box sx={{ 
-            minWidth: isMobile ? 600 : 'auto',  // モバイルでの最小幅を調整
-            px: isMobile ? 1 : 0,               // スクロール領域内のパディング
-          }}>
-            <FundList />
-          </Box>
+        <Box>
+          <FundList />
         </Box>
       </Box>
     </Container>

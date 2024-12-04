@@ -15,7 +15,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from 'recharts';
 import { getFundWithPosition, getFundPerformance } from '../../data/funds';
 
@@ -26,8 +25,9 @@ interface ChartProps {
 const FundPerformanceChart: React.FC<ChartProps> = ({ fundId }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const fund = getFundWithPosition(fundId);
-  const { data: performanceData, benchmark: benchmarkName } = getFundPerformance(fundId);
+  const { data: performanceData } = getFundPerformance(fundId);
 
   if (!fund || !performanceData.length) return null;
 
@@ -66,7 +66,6 @@ const FundPerformanceChart: React.FC<ChartProps> = ({ fundId }) => {
                 formatter={(value: number) => [`${value}%`, '']}
                 labelFormatter={(label) => `${label}`}
               />
-              <Legend />
               <Line
                 name={fund.name}
                 type="monotone"
@@ -74,15 +73,6 @@ const FundPerformanceChart: React.FC<ChartProps> = ({ fundId }) => {
                 stroke={theme.palette.primary.main}
                 dot={false}
                 strokeWidth={2}
-              />
-              <Line
-                name={benchmarkName}
-                type="monotone"
-                dataKey="benchmark"
-                stroke={theme.palette.grey[500]}
-                dot={false}
-                strokeWidth={2}
-                strokeDasharray="5 5"
               />
             </LineChart>
           </ResponsiveContainer>
