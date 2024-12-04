@@ -34,7 +34,7 @@ const Layout = () => {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/teneo">
         <ScrollToTop />
         <ThemeProvider theme={theme}>
           <CssBaseline />
