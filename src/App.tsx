@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
+import ScrollToTop from './components/common/ScrollToTop';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from './theme';
 import Sidebar from './components/Sidebar';
@@ -7,7 +8,8 @@ import AppRoutes from './routes';
 
 function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <BrowserRouter>
+      <ScrollToTop />
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
@@ -17,7 +19,7 @@ function App() {
           </Box>
         </Box>
       </ThemeProvider>
-    </Router>
+    </BrowserRouter>
   );
 }
 
