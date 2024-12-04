@@ -6,6 +6,7 @@ import TransactionHistory from './components/transaction/TransactionHistory';
 import NewPurchase from './components/fund/NewPurchase';
 import BuyForm from './components/fund/BuyForm';
 import SellForm from './components/fund/SellForm';
+import CashTransactions from './components/cash/CashTransactions';
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/funds/:fundId/sell" element={<SellForm />} />
       <Route path="/funds/new" element={<NewPurchase />} />
       <Route path="/transactions" element={<TransactionHistory />} />
+      <Route path="/cash-transactions" element={<CashTransactions />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

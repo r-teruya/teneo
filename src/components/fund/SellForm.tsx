@@ -1,179 +1,214 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
+  Container,
   Card,
   CardContent,
   Typography,
   TextField,
   Button,
   Alert,
-  Stack,
+  Divider,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { Warning as WarningIcon } from '@mui/icons-material';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Fund, Position } from '../../types';
-
-// ダミーデータ
-const fundData: Fund & Position = {
-  id: '1',
-  fundId: '1',
-  name: 'グローバル・エクイティ・ファンド',
-  type: '株式',
-  risk: 4,
-  currency: '円',
-  minInvestment: 1000000,
-  description: '世界の主要株式市場に投資するグローバル株式ファンドです。',
-  features: ['世界の優良企業に投資', 'アクティブ運用による銘柄選定', '為替ヘッジなし'],
-  units: 1000,
-  bookValue: 2000000,
-  currentValue: 2200000,
-  unrealizedGain: 200000,
-  unrealizedGainPercent: 10,
-};
+import { getFundWithPosition } from '../../data/funds';
 
 const SellForm = () => {
-  const { fundId } = useParams();
+  const { fundId } = useParams<{ fundId: string }>();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [units, setUnits] = React.useState<string>('');
 
-  const handleUnitsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/[^\d]/g, '');
-    setUnits(value);
-  };
+  const fund = fundId ? getFundWithPosition(fundId) : null;
+  const [units, setUnits] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
-  const handleSubmit = () => {
-    if (!units) return;
-    
-    // 実際のアプリケーションでは解約処理を実行
-    console.log('Sell:', {
-      fundId,
-      units: parseInt(units),
+  if (!fund) {
+    return (
+      <Container maxWidth="sm">
+        <Box sx={{ py: { xs: 2, sm: 3 } }}>
+          <Alert severity="error">ファンドが見つかりません。</Alert>
+        </Box>
+      </Container>
+    );
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const sellUnits = Number(units);
+
+    if (isNaN(sellUnits) || sellUnits <= 0) {
+      setError('有効な口数を入力してください。');
+      return;
+    }
+
+    if (sellUnits > fund.units) {
+      setError(`保有口数（${fund.units.toLocaleString()}口）を超えて解約することはできません。`);
+      return;
+    }
+
+    // 概算解約金額を計算
+    const estimatedAmount = Math.floor(fund.currentValue * (sellUnits / fund.units));
+
+    // TODO: 売却処理の実装
+    console.log('Sell:', { 
+      fundId: fund.id, 
+      units: sellUnits,
+      estimatedAmount,
     });
-
-    // 取引履歴画面に遷移
-    navigate('/transactions');
+    navigate('/dashboard');
   };
 
-  const isValidUnits = parseInt(units) > 0 && parseInt(units) <= fundData.units;
-  const estimatedValue = isValidUnits 
-    ? Math.round((parseInt(units) / fundData.units) * fundData.currentValue)
-    : 0;
+  const calculateEstimatedAmount = (sellUnits: number) => {
+    if (isNaN(sellUnits) || sellUnits <= 0) return 0;
+    return Math.floor(fund.currentValue * (sellUnits / fund.units));
+  };
 
   return (
-    <Box sx={{ 
-      p: { xs: 1.5, sm: 2, md: 3 },
-      pt: { xs: '64px', sm: '64px', md: '64px' },
-    }}>
-      <Typography 
-        variant="h4" 
-        gutterBottom
-        sx={{ fontSize: isMobile ? '1.5rem' : '2.125rem' }}
-      >
-        解約
-      </Typography>
-
-      <Card sx={{ mb: { xs: 2, sm: 3 } }}>
-        <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-          <Typography 
-            variant="h6"
-            sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}
-          >
-            {fundData.name}
-          </Typography>
-          <Box sx={{ mt: 2 }}>
+    <Container maxWidth="sm">
+      <Box sx={{ py: { xs: 2, sm: 3 } }}>
+        <Card>
+          <CardContent sx={{ 
+            p: { xs: 2, sm: 3 },
+            '&:last-child': { pb: { xs: 2, sm: 3 } },
+          }}>
             <Typography 
-              variant="body2" 
-              color="text.secondary"
-              sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}
-            >
-              保有口数
-            </Typography>
-            <Typography 
-              variant="h6"
-              sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}
-            >
-              {fundData.units.toLocaleString()}口
-            </Typography>
-          </Box>
-          <Box sx={{ mt: 1 }}>
-            <Typography 
-              variant="body2" 
-              color="text.secondary"
-              sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}
-            >
-              評価額
-            </Typography>
-            <Typography 
-              variant="h6"
-              sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}
-            >
-              ¥{fundData.currentValue.toLocaleString()}
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-          <Stack spacing={2}>
-            <Typography 
-              variant="h6"
-              sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}
-            >
-              解約口数を入力
-            </Typography>
-            <TextField
-              fullWidth
-              label="解約口数"
-              value={units ? parseInt(units).toLocaleString() : ''}
-              onChange={handleUnitsChange}
-              error={!!units && !isValidUnits}
-              helperText={
-                units && !isValidUnits
-                  ? '解約口数が保有口数を超えています'
-                  : ' '
-              }
-              size={isMobile ? "small" : "medium"}
-            />
-            {isValidUnits && (
-              <Typography 
-                variant="body1"
-                sx={{ fontSize: isMobile ? '0.875rem' : '1rem' }}
-              >
-                概算解約金額: ¥{estimatedValue.toLocaleString()}
-              </Typography>
-            )}
-            <Button
-              variant="contained"
-              color="error"
-              fullWidth
-              size={isMobile ? "large" : "large"}
-              disabled={!isValidUnits}
-              onClick={handleSubmit}
-            >
-              解約を申請
-            </Button>
-
-            <Alert 
-              severity="info" 
-              icon={<WarningIcon />}
+              variant="h5" 
+              gutterBottom
               sx={{ 
-                '& .MuiAlert-message': {
-                  fontSize: isMobile ? '0.75rem' : '0.875rem',
-                },
+                fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                fontWeight: 500,
               }}
             >
-              解約代金は、受渡日に指定口座へ入金されます。
-              解約時の基準価額により、実際の解約金額は概算額と異なる場合があります。
-            </Alert>
-          </Stack>
-        </CardContent>
-      </Card>
-    </Box>
+              ファンド解約
+            </Typography>
+
+            <Box sx={{ my: { xs: 2, sm: 3 } }}>
+              <Typography 
+                variant="h6"
+                sx={{ 
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  fontWeight: 500,
+                }}
+              >
+                {fund.name}
+              </Typography>
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
+                {fund.type} • {fund.currency}
+              </Typography>
+            </Box>
+
+            <Divider sx={{ my: { xs: 2, sm: 3 } }} />
+
+            <Box component="form" onSubmit={handleSubmit}>
+              <Box sx={{ mb: 3 }}>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  gutterBottom
+                  sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                >
+                  解約口数（保有口数: {fund.units.toLocaleString()}口）
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="number"
+                  value={units}
+                  onChange={(e) => {
+                    setUnits(e.target.value);
+                    setError('');
+                  }}
+                  placeholder="解約口数を入力"
+                  error={!!error}
+                  helperText={error}
+                  InputProps={{
+                    endAdornment: '口',
+                  }}
+                  sx={{
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '1rem', sm: '1.25rem' },
+                    },
+                  }}
+                />
+              </Box>
+
+              {units && !error && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                  >
+                    概算解約金額
+                  </Typography>
+                  <Typography 
+                    variant="h6"
+                    sx={{ 
+                      fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                      fontWeight: 500,
+                      color: theme.palette.primary.main,
+                    }}
+                  >
+                    ¥{calculateEstimatedAmount(Number(units)).toLocaleString()}
+                  </Typography>
+                  <Typography 
+                    variant="caption" 
+                    color="text.secondary"
+                    sx={{ fontSize: { xs: '0.625rem', sm: '0.75rem' } }}
+                  >
+                    ※ 実際の解約金額は、解約時の基準価額により変動します。
+                  </Typography>
+                </Box>
+              )}
+
+              <Alert 
+                severity="warning" 
+                sx={{ 
+                  mb: 3,
+                  '& .MuiAlert-message': {
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  },
+                }}
+              >
+                解約申請後のキャンセルはできません。
+                解約金額は解約時の基準価額で計算され、
+                お客様の口座に入金されるまでに5営業日程度かかります。
+              </Alert>
+
+              <Box sx={{ 
+                display: 'flex', 
+                gap: 2,
+                flexDirection: { xs: 'column', sm: 'row' },
+              }}>
+                <Button
+                  variant="contained"
+                  color="error"
+                  type="submit"
+                  fullWidth={isMobile}
+                  size={isMobile ? "large" : "medium"}
+                >
+                  解約する
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate(-1)}
+                  fullWidth={isMobile}
+                  size={isMobile ? "large" : "medium"}
+                >
+                  キャンセル
+                </Button>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   );
 };
 

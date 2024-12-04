@@ -3,126 +3,77 @@ import {
   Box,
   Card,
   CardContent,
-  Grid,
   Typography,
+  Grid,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import {
-  AccountBalance as AccountBalanceIcon,
-  TrendingUp as TrendingUpIcon,
-  Today as TodayIcon,
-  Timeline as TimelineIcon,
-} from '@mui/icons-material';
-
-interface SummaryCardProps {
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  subValue?: string;
-  trend?: 'up' | 'down';
-  iconColor?: string;
-}
+import { getTotalAssets } from '../../data/funds';
 
 const PortfolioSummary = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
-  const SummaryCard = ({ icon, title, value, subValue, trend, iconColor }: SummaryCardProps) => (
-    <Card>
-      <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-          <Box sx={{ 
-            p: 1,
-            bgcolor: iconColor || 'primary.main',
-            borderRadius: 1,
-            color: 'common.white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            {React.cloneElement(icon as React.ReactElement, {
-              sx: { fontSize: isMobile ? 24 : 32 }
-            })}
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography 
-              variant="body2" 
-              color="text.secondary"
-              sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}
-            >
-              {title}
-            </Typography>
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                my: 0.5,
-                fontSize: isMobile ? '1.25rem' : '1.5rem',
-              }}
-            >
-              {value}
-            </Typography>
-            {subValue && (
-              <Typography
-                variant="body2"
-                sx={{
-                  color: trend === 'up' ? 'success.main' : trend === 'down' ? 'error.main' : 'text.secondary',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5,
-                  fontSize: isMobile ? '0.75rem' : '0.875rem',
-                }}
-              >
-                {trend === 'up' && <TrendingUpIcon sx={{ fontSize: 'inherit' }} />}
-                {subValue}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
-  );
+  const totalAssets = getTotalAssets();
+  const unrealizedGain = 16600000;
+  const todayGain = 150000;
+  const yearReturn = 15.2;
+
+  const summaryItems = [
+    {
+      label: '総資産',
+      value: `¥${totalAssets.toLocaleString()}`,
+      color: theme.palette.primary.main,
+    },
+    {
+      label: '含み益',
+      value: `¥${unrealizedGain.toLocaleString()}`,
+      color: unrealizedGain >= 0 ? theme.palette.success.main : theme.palette.error.main,
+    },
+    {
+      label: '本日の損益',
+      value: `¥${todayGain.toLocaleString()}`,
+      color: todayGain >= 0 ? theme.palette.success.main : theme.palette.error.main,
+    },
+    {
+      label: '年間リターン',
+      value: `${yearReturn}%`,
+      color: yearReturn >= 0 ? theme.palette.success.main : theme.palette.error.main,
+    },
+  ];
 
   return (
-    <Grid container spacing={{ xs: 1.5, sm: 2 }}>
-      <Grid item xs={12} sm={6} md={3}>
-        <SummaryCard
-          icon={<AccountBalanceIcon />}
-          title="資産総額"
-          value="¥12,500,000"
-          iconColor={theme.palette.primary.main}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <SummaryCard
-          icon={<TrendingUpIcon />}
-          title="評価損益"
-          value="¥2,500,000"
-          subValue="+25%"
-          trend="up"
-          iconColor={theme.palette.success.main}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <SummaryCard
-          icon={<TodayIcon />}
-          title="本日の損益"
-          value="¥150,000"
-          subValue="+1.2%"
-          trend="up"
-          iconColor={theme.palette.info.main}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <SummaryCard
-          icon={<TimelineIcon />}
-          title="年間リターン"
-          value="15.2%"
-          subValue="月間: +2.5%"
-          trend="up"
-          iconColor={theme.palette.warning.main}
-        />
-      </Grid>
+    <Grid container spacing={{ xs: 2, sm: 3 }}>
+      {summaryItems.map((item, index) => (
+        <Grid item xs={6} md={3} key={index}>
+          <Card>
+            <CardContent sx={{ 
+              p: { xs: 1.5, sm: 2 },
+              '&:last-child': { pb: { xs: 1.5, sm: 2 } },
+            }}>
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                gutterBottom
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
+                {item.label}
+              </Typography>
+              <Typography 
+                variant="h6"
+                sx={{ 
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  fontWeight: 500,
+                  color: item.color,
+                }}
+              >
+                {item.value}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
     </Grid>
   );
 };

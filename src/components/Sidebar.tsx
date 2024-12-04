@@ -19,6 +19,7 @@ import {
   AccountBalance as AccountBalanceIcon,
   Dashboard as DashboardIcon,
   History as HistoryIcon,
+  Payment as PaymentIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ const DRAWER_WIDTH = 240;
 const MENU_ITEMS = [
   { path: '/dashboard', label: 'ダッシュボード', icon: <DashboardIcon /> },
   { path: '/transactions', label: '取引履歴', icon: <HistoryIcon /> },
+  { path: '/cash-transactions', label: '入出金', icon: <PaymentIcon /> },
 ];
 
 const Sidebar = () => {
