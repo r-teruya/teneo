@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import {
   Box,
   Container,
@@ -9,10 +8,19 @@ import {
   Grid,
   Chip,
   Button,
+  IconButton,
   useTheme,
   useMediaQuery,
-  Divider,
+  Stack,
+  Tooltip,
 } from '@mui/material';
+import {
+  Info as InfoIcon,
+  TrendingUp as TrendingUpIcon,
+  AccountBalance as AccountBalanceIcon,
+  ArrowForward as ArrowForwardIcon,
+} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { funds } from '../../data/funds';
 
 const NewPurchase = () => {
@@ -24,144 +32,107 @@ const NewPurchase = () => {
     navigate(`/funds/${fundId}/buy`);
   };
 
-  const getRiskColor = (risk: number) => {
-    switch (risk) {
-      case 5: return theme.palette.error;
-      case 4: return theme.palette.warning;
-      case 3: return theme.palette.info;
-      case 2: return theme.palette.success;
-      default: return theme.palette.primary;
-    }
+  const handleShowDetails = (fundId: string) => {
+    navigate(`/funds/${fundId}`);
   };
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ py: { xs: 2, sm: 3 } }}>
-        <Typography 
-          variant="h5" 
-          gutterBottom
-          sx={{ 
-            fontSize: { xs: '1.25rem', sm: '1.5rem' },
-            fontWeight: 500,
-            mb: { xs: 2, sm: 3 },
-          }}
-        >
+      <Box sx={{ py: { xs: 2, sm: 3 }, mt: { xs: '64px', sm: 0 } }}>
+        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
           新規ファンド購入
         </Typography>
 
-        <Grid container spacing={{ xs: 2, sm: 3 }}>
+        <Grid container spacing={3}>
           {funds.map((fund) => (
-            <Grid item xs={12} sm={6} md={4} key={fund.id}>
-              <Card 
-                sx={{ 
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                  },
-                }}
-              >
-                <CardContent sx={{ 
-                  p: { xs: 2, sm: 3 },
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}>
+            <Grid item xs={12} md={6} key={fund.id}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  {/* ファンド名とタイプ */}
                   <Box sx={{ mb: 2 }}>
-                    <Typography 
-                      variant="h6"
-                      sx={{ 
-                        fontSize: { xs: '1rem', sm: '1.25rem' },
-                        fontWeight: 500,
-                        mb: 1,
-                      }}
-                    >
-                      {fund.name}
-                    </Typography>
-                    <Box sx={{ 
-                      display: 'flex',
-                      gap: 1,
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                    }}>
-                      <Chip
-                        label={fund.type}
-                        size={isMobile ? "small" : "medium"}
-                        variant="outlined"
-                      />
-                      <Chip
-                        label={`リスク ${fund.risk}`}
-                        size={isMobile ? "small" : "medium"}
-                        sx={{ 
-                          color: getRiskColor(fund.risk).main,
-                          borderColor: getRiskColor(fund.risk).main,
-                        }}
-                        variant="outlined"
-                      />
-                    </Box>
-                  </Box>
-
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary"
-                    paragraph
-                    sx={{ 
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                      flex: 1,
-                    }}
-                  >
-                    {fund.description}
-                  </Typography>
-
-                  <Box sx={{ 
-                    display: 'flex', 
-                    gap: 1, 
-                    flexWrap: 'wrap',
-                    mb: 2,
-                  }}>
-                    {fund.features.map((feature, index) => (
-                      <Chip
-                        key={index}
-                        label={feature}
+                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Typography variant="h6" sx={{ mb: 1 }}>
+                        {fund.name}
+                      </Typography>
+                      <Tooltip title="詳細を見る">
+                        <IconButton 
+                          size="small" 
+                          color="primary"
+                          onClick={() => handleShowDetails(fund.id)}
+                        >
+                          <InfoIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                    <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ gap: 1 }}>
+                      <Chip 
+                        label={fund.type} 
+                        color="primary" 
                         size="small"
-                        variant="outlined"
-                        sx={{ 
-                          fontSize: { xs: '0.625rem', sm: '0.75rem' },
-                        }}
                       />
-                    ))}
+                      <Chip 
+                        label={`リスク ${fund.risk}`} 
+                        color="warning"
+                        size="small"
+                      />
+                      <Chip 
+                        label={fund.currency} 
+                        variant="outlined"
+                        size="small"
+                      />
+                    </Stack>
                   </Box>
 
-                  <Divider sx={{ my: 2 }} />
-
-                  <Box>
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary"
-                      sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
-                    >
-                      最低投資額
+                  {/* ファンドの特徴 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" paragraph>
+                      {fund.description}
                     </Typography>
-                    <Typography 
-                      variant="h6"
-                      sx={{ 
-                        fontSize: { xs: '1rem', sm: '1.25rem' },
-                        fontWeight: 500,
-                        mb: 2,
-                      }}
-                    >
-                      ¥{fund.minInvestment.toLocaleString()}
-                    </Typography>
+                    <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ gap: 1 }}>
+                      {fund.features.map((feature, index) => (
+                        <Chip
+                          key={index}
+                          label={feature}
+                          variant="outlined"
+                          size="small"
+                          sx={{ fontSize: '0.75rem' }}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
 
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      onClick={() => handleSelectFund(fund.id)}
-                      size={isMobile ? "large" : "medium"}
-                    >
-                      このファンドを購入
-                    </Button>
+                  {/* 投資情報と購入ボタン */}
+                  <Box sx={{ 
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    mt: 'auto',
+                  }}>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        最低投資金額
+                      </Typography>
+                      <Typography variant="h6" color="primary.main">
+                        ¥{fund.minInvestment.toLocaleString()}
+                      </Typography>
+                    </Box>
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleShowDetails(fund.id)}
+                        startIcon={<InfoIcon />}
+                      >
+                        詳細
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleSelectFund(fund.id)}
+                        endIcon={<ArrowForwardIcon />}
+                      >
+                        購入する
+                      </Button>
+                    </Stack>
                   </Box>
                 </CardContent>
               </Card>

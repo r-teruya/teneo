@@ -21,19 +21,63 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { getPortfolioHistory } from '../../data/portfolio';
-import { HistoryPeriod } from '../../types/portfolio';
+
+// 期間別のデータ
+const historicalData = {
+  '1M': [
+    { date: '03/01', totalAssets: 6500000, principal: 5800000, cash: 1000000 },
+    { date: '03/05', totalAssets: 6550000, principal: 5800000, cash: 1000000 },
+    { date: '03/10', totalAssets: 6580000, principal: 5800000, cash: 1000000 },
+    { date: '03/15', totalAssets: 6600000, principal: 5800000, cash: 1000000 },
+    { date: '03/20', totalAssets: 6620000, principal: 5800000, cash: 1000000 },
+    { date: '03/25', totalAssets: 6650000, principal: 5800000, cash: 1000000 },
+    { date: '03/31', totalAssets: 6675000, principal: 5800000, cash: 1000000 },
+  ],
+  '3M': [
+    { date: '2024/01', totalAssets: 6300000, principal: 5800000, cash: 1000000 },
+    { date: '2024/02', totalAssets: 6500000, principal: 5800000, cash: 1000000 },
+    { date: '2024/03', totalAssets: 6675000, principal: 5800000, cash: 1000000 },
+  ],
+  '6M': [
+    { date: '2023/10', totalAssets: 6000000, principal: 5500000, cash: 1000000 },
+    { date: '2023/11', totalAssets: 6100000, principal: 5500000, cash: 1000000 },
+    { date: '2023/12', totalAssets: 6200000, principal: 5800000, cash: 1000000 },
+    { date: '2024/01', totalAssets: 6300000, principal: 5800000, cash: 1000000 },
+    { date: '2024/02', totalAssets: 6500000, principal: 5800000, cash: 1000000 },
+    { date: '2024/03', totalAssets: 6675000, principal: 5800000, cash: 1000000 },
+  ],
+  '1Y': [
+    { date: '2023/04', totalAssets: 5800000, principal: 5500000, cash: 1000000 },
+    { date: '2023/06', totalAssets: 5900000, principal: 5500000, cash: 1000000 },
+    { date: '2023/08', totalAssets: 6000000, principal: 5500000, cash: 1000000 },
+    { date: '2023/10', totalAssets: 6100000, principal: 5500000, cash: 1000000 },
+    { date: '2023/12', totalAssets: 6200000, principal: 5800000, cash: 1000000 },
+    { date: '2024/02', totalAssets: 6500000, principal: 5800000, cash: 1000000 },
+    { date: '2024/03', totalAssets: 6675000, principal: 5800000, cash: 1000000 },
+  ],
+  'ALL': [
+    { date: '2022/04', totalAssets: 5000000, principal: 5000000, cash: 1000000 },
+    { date: '2022/07', totalAssets: 5200000, principal: 5000000, cash: 1000000 },
+    { date: '2022/10', totalAssets: 5400000, principal: 5200000, cash: 1000000 },
+    { date: '2023/01', totalAssets: 5600000, principal: 5200000, cash: 1000000 },
+    { date: '2023/04', totalAssets: 5800000, principal: 5500000, cash: 1000000 },
+    { date: '2023/07', totalAssets: 6000000, principal: 5500000, cash: 1000000 },
+    { date: '2023/10', totalAssets: 6200000, principal: 5500000, cash: 1000000 },
+    { date: '2024/01', totalAssets: 6500000, principal: 5800000, cash: 1000000 },
+    { date: '2024/03', totalAssets: 6675000, principal: 5800000, cash: 1000000 },
+  ],
+};
+
+type Period = '1M' | '3M' | '6M' | '1Y' | 'ALL';
 
 const PortfolioSummaryChart = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [period, setPeriod] = useState<HistoryPeriod>('6M');
-
-  const historicalData = getPortfolioHistory();
+  const [period, setPeriod] = useState<Period>('6M');
 
   const handlePeriodChange = (
     event: React.MouseEvent<HTMLElement>,
-    newPeriod: HistoryPeriod | null,
+    newPeriod: Period | null,
   ) => {
     if (newPeriod !== null) {
       setPeriod(newPeriod);

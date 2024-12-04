@@ -6,6 +6,8 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
+  Stack,
+  Chip,
 } from '@mui/material';
 import {
   ResponsiveContainer,
@@ -29,6 +31,8 @@ const AssetAllocationChart = () => {
     risk: fund.risk,
   }));
 
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+
   // リスクレベルに応じた色を設定
   const getColor = (risk: number) => {
     switch (risk) {
@@ -41,29 +45,122 @@ const AssetAllocationChart = () => {
     }
   };
 
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  // ファンドタイプごとの集計を計算
+  const typeAggregation = data.reduce((acc, item) => {
+    acc[item.type] = (acc[item.type] || 0) + item.value;
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <Card>
-      <CardContent sx={{ 
-        p: { xs: 2, sm: 3 },
-        '&:last-child': { pb: { xs: 2, sm: 3 } },
-      }}>
-        <Typography 
-          variant="h6" 
-          gutterBottom
-          sx={{ 
-            fontSize: { xs: '1rem', sm: '1.25rem' },
-            fontWeight: 500,
-            mb: 2,
-          }}
-        >
-          ファンド別資産配分
-        </Typography>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Box sx={{ 
-          width: '100%',
-          height: isMobile ? 200 : 300,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          flexWrap: 'wrap',
+          gap: 2,
+          mb: 2,
         }}>
+          <Box>
+            <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' }, fontWeight: 500, mb: 1 }}>
+              ファンド別資産配分
+            </Typography>
+            <Stack 
+              direction="row" 
+              spacing={0} 
+              flexWrap="wrap" 
+              sx={{ 
+                mb: 1,
+                gap: 1,
+                '& > *': { 
+                  ml: '0 !important',
+                },
+              }}
+            >
+              <Chip
+                label={`総資産: ¥${total.toLocaleString()}`}
+                color="primary"
+                size={isMobile ? "small" : "medium"}
+              />
+              <Chip
+                label={`ファンド数: ${data.length}`}
+                color="secondary"
+                size={isMobile ? "small" : "medium"}
+              />
+            </Stack>
+          </Box>
+        </Box>
+
+        {/* ファンドタイプ別の集計 */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+            運用タイプ別構成比
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ gap: 1 }}>
+            {Object.entries(typeAggregation).map(([type, value]) => (
+              <Chip
+                key={type}
+                label={`${type}: ${((value / total) * 100).toFixed(1)}%`}
+                variant="outlined"
+                size="small"
+                sx={{ 
+                  fontSize: '0.75rem',
+                  bgcolor: 'background.paper',
+                }}
+              />
+            ))}
+          </Stack>
+        </Box>
+
+        {/* リスク分布の表示 */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+            リスクレベル分布
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {[1, 2, 3, 4, 5].map((risk) => {
+              const riskAmount = data
+                .filter(item => item.risk === risk)
+                .reduce((sum, item) => sum + item.value, 0);
+              const percentage = (riskAmount / total) * 100;
+              
+              return (
+                <Box 
+                  key={risk}
+                  sx={{ 
+                    flex: 1,
+                    height: 4,
+                    bgcolor: getColor(risk),
+                    position: 'relative',
+                    borderRadius: 1,
+                    '&::after': {
+                      content: `"${percentage.toFixed(0)}%"`,
+                      position: 'absolute',
+                      top: '8px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      fontSize: '0.625rem',
+                      color: 'text.secondary',
+                    },
+                  }}
+                />
+              );
+            })}
+          </Box>
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            mt: 3,
+            px: 1,
+          }}>
+            <Typography variant="caption" color="text.secondary">低リスク</Typography>
+            <Typography variant="caption" color="text.secondary">高リスク</Typography>
+          </Box>
+        </Box>
+
+        {/* 円グラフ */}
+        <Box sx={{ height: isMobile ? 300 : 350, position: 'relative' }}>
           <ResponsiveContainer>
             <PieChart>
               <Pie
@@ -90,25 +187,12 @@ const AssetAllocationChart = () => {
                   fontSize: isMobile ? 12 : 14,
                   padding: '8px 12px',
                 }}
-                formatter={(value: number, name: string, props: any) => [
+                formatter={(value: number) => [
                   <Box>
                     <Typography sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
                       ¥{value.toLocaleString()} ({((value / total) * 100).toFixed(1)}%)
                     </Typography>
-                    <Typography 
-                      color="text.secondary" 
-                      sx={{ fontSize: isMobile ? '0.625rem' : '0.75rem' }}
-                    >
-                      タイプ: {props.payload.type}
-                    </Typography>
-                    <Typography 
-                      color="text.secondary" 
-                      sx={{ fontSize: isMobile ? '0.625rem' : '0.75rem' }}
-                    >
-                      リスク: {props.payload.risk}
-                    </Typography>
                   </Box>,
-                  name,
                 ]}
               />
               <Legend
@@ -117,30 +201,33 @@ const AssetAllocationChart = () => {
                 verticalAlign="middle"
                 iconSize={isMobile ? 8 : 10}
                 iconType="circle"
-                formatter={(value: string, entry: any) => (
-                  <Box>
-                    <Typography 
-                      sx={{ 
-                        fontSize: isMobile ? '0.75rem' : '0.875rem',
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      {value}
-                    </Typography>
-                    <Typography 
-                      sx={{ 
-                        fontSize: isMobile ? '0.625rem' : '0.75rem',
-                        color: theme.palette.text.secondary,
-                      }}
-                    >
-                      {((entry.payload.value / total) * 100).toFixed(1)}%
-                    </Typography>
-                  </Box>
+                wrapperStyle={{
+                  paddingLeft: isMobile ? 0 : 20,
+                  right: isMobile ? 0 : 10,
+                  maxWidth: isMobile ? '40%' : '30%',
+                }}
+                formatter={(value: string) => (
+                  <Typography 
+                    sx={{ 
+                      fontSize: isMobile ? '0.625rem' : '0.75rem',
+                      lineHeight: 1.2,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {value}
+                  </Typography>
                 )}
               />
             </PieChart>
           </ResponsiveContainer>
         </Box>
+
+        {/* 注釈 */}
         <Typography 
           variant="caption" 
           color="text.secondary"
@@ -151,8 +238,7 @@ const AssetAllocationChart = () => {
             fontSize: { xs: '0.625rem', sm: '0.75rem' },
           }}
         >
-          ※ 資産配分は時価評価額に基づいて計算されています。
-          リスクレベルは1（低）～5（高）で表示されています。
+          ※ 資産配分は時価評価額に基づいて計算されています
         </Typography>
       </CardContent>
     </Card>

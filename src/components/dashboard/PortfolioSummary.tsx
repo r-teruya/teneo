@@ -8,73 +8,74 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { getTotalAssets } from '../../data/funds';
+import { getPortfolioSummary } from '../../data/funds';
 
 const PortfolioSummary = () => {
+  const summary = getPortfolioSummary();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-
-  const totalAssets = getTotalAssets();
-  const unrealizedGain = 16600000;
-  const todayGain = 150000;
-  const yearReturn = 15.2;
-
-  const summaryItems = [
-    {
-      label: '総資産',
-      value: `¥${totalAssets.toLocaleString()}`,
-      color: theme.palette.primary.main,
-    },
-    {
-      label: '含み益',
-      value: `¥${unrealizedGain.toLocaleString()}`,
-      color: unrealizedGain >= 0 ? theme.palette.success.main : theme.palette.error.main,
-    },
-    {
-      label: '本日の損益',
-      value: `¥${todayGain.toLocaleString()}`,
-      color: todayGain >= 0 ? theme.palette.success.main : theme.palette.error.main,
-    },
-    {
-      label: '年間リターン',
-      value: `${yearReturn}%`,
-      color: yearReturn >= 0 ? theme.palette.success.main : theme.palette.error.main,
-    },
-  ];
 
   return (
-    <Grid container spacing={{ xs: 2, sm: 3 }}>
-      {summaryItems.map((item, index) => (
-        <Grid item xs={6} md={3} key={index}>
-          <Card>
-            <CardContent sx={{ 
-              p: { xs: 1.5, sm: 2 },
-              '&:last-child': { pb: { xs: 1.5, sm: 2 } },
-            }}>
-              <Typography 
-                variant="body2" 
-                color="text.secondary"
-                gutterBottom
-                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
-              >
-                {item.label}
+    <Card>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          ポートフォリオサマリー
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                総資産
+              </Typography>
+              <Typography variant="h6">
+                ¥{summary.totalAssets.toLocaleString()}
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                投資元本
+              </Typography>
+              <Typography variant="h6">
+                ¥{summary.totalPrincipal.toLocaleString()}
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                評価損益
               </Typography>
               <Typography 
-                variant="h6"
-                sx={{ 
-                  fontSize: { xs: '1rem', sm: '1.25rem' },
-                  fontWeight: 500,
-                  color: item.color,
-                }}
+                variant="h6" 
+                color={summary.totalGain >= 0 ? 'success.main' : 'error.main'}
               >
-                {item.value}
+                {summary.totalGain >= 0 ? '+' : ''}¥{summary.totalGain.toLocaleString()}
+                <Typography 
+                  component="span" 
+                  variant="body2" 
+                  color="inherit"
+                  sx={{ ml: 1 }}
+                >
+                  ({summary.gainPercent >= 0 ? '+' : ''}{summary.gainPercent.toFixed(1)}%)
+                </Typography>
               </Typography>
-            </CardContent>
-          </Card>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                保有現金
+              </Typography>
+              <Typography variant="h6">
+                ¥{summary.cashBalance.toLocaleString()}
+              </Typography>
+            </Box>
+          </Grid>
         </Grid>
-      ))}
-    </Grid>
+      </CardContent>
+    </Card>
   );
 };
 

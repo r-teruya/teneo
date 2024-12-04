@@ -25,7 +25,7 @@ export const funds: Fund[] = [
     type: '株式ロングショート',
     risk: 4,
     currency: '円',
-    minInvestment: 10000000,
+    minInvestment: 1000000,
     description: 'グローバルな株式市場で、割安な銘柄のロングと割高な銘柄のショートを組み合わせて、市場環境に左右されにくい安定的なリターンを目指します。',
     features: [
       'マーケットニュートラル戦略',
@@ -40,7 +40,7 @@ export const funds: Fund[] = [
     type: '株式ロングショート',
     risk: 5,
     currency: '円',
-    minInvestment: 10000000,
+    minInvestment: 1000000,
     description: 'アジア地域の株式市場において、成長性の高い銘柄をロング、構造的な課題を抱える銘柄をショートすることで、高いリターンを目指します。',
     features: [
       'アジア市場特化',
@@ -99,47 +99,47 @@ export const funds: Fund[] = [
 export const positions: Position[] = [
   {
     fundId: '1',
-    units: 1000,
-    bookValue: 10000000,
-    currentValue: 12800000,
-    unrealizedGain: 2800000,
+    units: 100,
+    bookValue: 1000000,
+    currentValue: 1280000,
+    unrealizedGain: 280000,
     unrealizedGainPercent: 28.0,
   },
   {
     fundId: '2',
-    units: 800,
-    bookValue: 8000000,
-    currentValue: 8800000,
-    unrealizedGain: 800000,
-    unrealizedGainPercent: 10.0,
+    units: 80,
+    bookValue: 800000,
+    currentValue: 920000,
+    unrealizedGain: 120000,
+    unrealizedGainPercent: 15.0,
   },
   {
     fundId: '3',
-    units: 250,
-    bookValue: 25000000,
-    currentValue: 27500000,
-    unrealizedGain: 2500000,
+    units: 150,
+    bookValue: 1500000,
+    currentValue: 1650000,
+    unrealizedGain: 150000,
     unrealizedGainPercent: 10.0,
   },
   {
     fundId: '4',
-    units: 100,
-    bookValue: 50000000,
-    currentValue: 52500000,
-    unrealizedGain: 2500000,
+    units: 50,
+    bookValue: 500000,
+    currentValue: 525000,
+    unrealizedGain: 25000,
     unrealizedGainPercent: 5.0,
   },
   {
     fundId: '5',
-    units: 50,
-    bookValue: 100000000,
-    currentValue: 115000000,
-    unrealizedGain: 15000000,
+    units: 200,
+    bookValue: 2000000,
+    currentValue: 2300000,
+    unrealizedGain: 300000,
     unrealizedGainPercent: 15.0,
   },
 ];
 
-// 資産推移データ
+// 資産推移データを現実的な金額に調整
 export interface AssetHistory {
   date: string;
   value: number;
@@ -151,87 +151,73 @@ export interface AssetHistory {
 export const assetHistory: AssetHistory[] = [
   {
     date: '2023/04',
-    value: 180000000,
-    previousValue: 175000000,
-    change: 5000000,
-    changePercent: 2.86,
+    value: 5800000,    // 580万円
+    previousValue: 5500000,
+    change: 300000,
+    changePercent: 5.45,
   },
   {
     date: '2023/05',
-    value: 185000000,
-    previousValue: 180000000,
-    change: 5000000,
-    changePercent: 2.78,
+    value: 6000000,    // 600万円
+    previousValue: 5800000,
+    change: 200000,
+    changePercent: 3.45,
   },
   {
     date: '2023/06',
-    value: 190000000,
-    previousValue: 185000000,
-    change: 5000000,
-    changePercent: 2.70,
+    value: 6200000,    // 620万円
+    previousValue: 6000000,
+    change: 200000,
+    changePercent: 3.33,
   },
   {
     date: '2023/07',
-    value: 195000000,
-    previousValue: 190000000,
-    change: 5000000,
-    changePercent: 2.63,
+    value: 6300000,    // 630万円
+    previousValue: 6200000,
+    change: 100000,
+    changePercent: 1.61,
   },
   {
     date: '2023/08',
-    value: 200000000,
-    previousValue: 195000000,
-    change: 5000000,
-    changePercent: 2.56,
+    value: 6400000,    // 640万円
+    previousValue: 6300000,
+    change: 100000,
+    changePercent: 1.59,
   },
   {
     date: '2023/09',
-    value: 205000000,
-    previousValue: 200000000,
-    change: 5000000,
-    changePercent: 2.50,
+    value: 6500000,    // 650万円
+    previousValue: 6400000,
+    change: 100000,
+    changePercent: 1.56,
   },
   {
     date: '2023/10',
-    value: 210000000,
-    previousValue: 205000000,
-    change: 5000000,
-    changePercent: 2.44,
+    value: 6550000,    // 655万円
+    previousValue: 6500000,
+    change: 50000,
+    changePercent: 0.77,
   },
   {
     date: '2023/11',
-    value: 212000000,
-    previousValue: 210000000,
-    change: 2000000,
-    changePercent: 0.95,
+    value: 6600000,    // 660万円
+    previousValue: 6550000,
+    change: 50000,
+    changePercent: 0.76,
   },
   {
     date: '2023/12',
-    value: 215000000,
-    previousValue: 212000000,
-    change: 3000000,
-    changePercent: 1.42,
+    value: 6650000,    // 665万円
+    previousValue: 6600000,
+    change: 50000,
+    changePercent: 0.76,
   },
   {
     date: '2024/01',
-    value: 216000000,
-    previousValue: 215000000,
-    change: 1000000,
-    changePercent: 0.47,
-  },
-  {
-    date: '2024/02',
-    value: 216500000,
-    previousValue: 216000000,
-    change: 500000,
-    changePercent: 0.23,
-  },
-  {
-    date: '2024/03',
-    value: 216600000,
-    previousValue: 216500000,
-    change: 100000,
-    changePercent: 0.05,
+    value: 6675000,    // 667.5万円（現在の総資産と一致）
+    previousValue: 6650000,
+    change: 25000,
+    changePercent: 0.38,
   },
 ];
 
@@ -257,24 +243,24 @@ export const getTotalAssets = () => {
 export interface FundPerformance {
   date: string;
   value: number;
-  benchmark: number;
+  benchmark?: number;
 }
 
 // ファンドごとのパフォーマンスデータ
 export const fundPerformanceData: Record<string, FundPerformance[]> = {
   '1': [
-    { date: '2023/04', value: 100.0, benchmark: 100.0 },
-    { date: '2023/05', value: 102.5, benchmark: 101.2 },
-    { date: '2023/06', value: 105.8, benchmark: 102.8 },
-    { date: '2023/07', value: 108.2, benchmark: 103.5 },
-    { date: '2023/08', value: 112.4, benchmark: 104.7 },
-    { date: '2023/09', value: 115.6, benchmark: 105.9 },
-    { date: '2023/10', value: 119.2, benchmark: 107.2 },
-    { date: '2023/11', value: 122.5, benchmark: 108.6 },
-    { date: '2023/12', value: 125.8, benchmark: 110.1 },
-    { date: '2024/01', value: 127.2, benchmark: 111.3 },
-    { date: '2024/02', value: 128.0, benchmark: 112.2 },
-    { date: '2024/03', value: 128.8, benchmark: 113.0 },
+    { date: '2023/04', value: 100.0 },
+    { date: '2023/05', value: 102.5 },
+    { date: '2023/06', value: 105.8 },
+    { date: '2023/07', value: 108.2 },
+    { date: '2023/08', value: 110.4 },
+    { date: '2023/09', value: 112.6 },
+    { date: '2023/10', value: 114.2 },
+    { date: '2023/11', value: 115.5 },
+    { date: '2023/12', value: 116.8 },
+    { date: '2024/01', value: 118.2 },
+    { date: '2024/02', value: 119.0 },
+    { date: '2024/03', value: 120.5 },
   ],
   '2': [
     { date: '2023/04', value: 100.0, benchmark: 100.0 },
@@ -348,5 +334,31 @@ export const getFundPerformance = (fundId: string) => {
   return {
     data: fundPerformanceData[fundId] || [],
     benchmark: benchmarkInfo[fundId],
+  };
+};
+
+// ポートフォリオサマリー用のデータ
+export interface PortfolioSummary {
+  totalAssets: number;      // 総資産
+  totalPrincipal: number;   // 投資元本
+  totalGain: number;        // 評価損益
+  gainPercent: number;      // 評価損益率
+  cashBalance: number;      // 保有現金
+}
+
+export const getPortfolioSummary = (): PortfolioSummary => {
+  const positions = getAllFundsWithPositions();
+  const totalAssets = positions.reduce((sum, fund) => sum + fund.currentValue, 0);
+  const totalPrincipal = positions.reduce((sum, fund) => sum + fund.bookValue, 0);
+  const totalGain = positions.reduce((sum, fund) => sum + fund.unrealizedGain, 0);
+  const gainPercent = (totalGain / totalPrincipal) * 100;
+  const cashBalance = 1000000;  // 現金残高100万円
+
+  return {
+    totalAssets,
+    totalPrincipal,
+    totalGain,
+    gainPercent,
+    cashBalance,
   };
 }; 
