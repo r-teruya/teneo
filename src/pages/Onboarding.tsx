@@ -6,7 +6,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Button,
   Typography,
 } from '@mui/material';
 
@@ -41,15 +40,20 @@ const Onboarding = () => {
   };
 
   const getStepContent = (step: number) => {
+    const navigationProps = {
+      onNext: handleNext,
+      onBack: handleBack,
+    };
+
     switch (step) {
       case 0:
-        return <PersonalInfo onNext={handleNext} />;
+        return <PersonalInfo {...navigationProps} />;
       case 1:
-        return <AddressInfo onNext={handleNext} onBack={handleBack} />;
+        return <AddressInfo {...navigationProps} />;
       case 2:
-        return <FinancialInfo onNext={handleNext} onBack={handleBack} />;
+        return <FinancialInfo {...navigationProps} />;
       case 3:
-        return <Confirmation onNext={handleNext} onBack={handleBack} />;
+        return <Confirmation {...navigationProps} />;
       default:
         return null;
     }

@@ -112,11 +112,18 @@ const Confirmation: React.FC<OnboardingStepProps> = ({ onNext, onBack }) => {
 
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Box sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between',
-              mt: 2,
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mt: 3,
+                flexDirection: { xs: 'column', sm: 'row' },
+                '& > button': {
+                  width: { xs: '100%', sm: 'auto' },
+                  mb: { xs: 1, sm: 0 }
+                }
+              }}
+            >
               <Button
                 variant="outlined"
                 onClick={onBack}
