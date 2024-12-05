@@ -64,7 +64,7 @@ const Confirmation: React.FC<OnboardingStepProps> = ({ onNext, onBack }) => {
             <ListItem sx={{ py: 1 }}>
               <ListItemText
                 primary={value}
-                secondary={key}
+                // secondary={key}
                 primaryTypographyProps={{
                   variant: 'body1',
                   fontWeight: 500,
