@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter, useLocation } from 'react-router-dom';
-import ScrollToTop from './components/common/ScrollToTop';
-import { Box, CssBaseline, ThemeProvider } from '@mui/material';
-import { theme } from './theme';
-import Sidebar from './components/Sidebar';
-import AppRoutes from './routes';
+import { ThemeProvider } from '@mui/material/styles';
+import { Box, CssBaseline } from '@mui/material';
+import theme from './theme';
 import { AuthProvider } from './contexts/AuthContext';
+import AppRoutes from './routes';
+import Sidebar from './components/Sidebar';
 
 // サイドバーを表示しないパス
 const noSidebarPaths = ['/', '/onboarding'];
@@ -31,18 +31,17 @@ const Layout = () => {
   );
 };
 
-function App() {
+const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <BrowserRouter basename="/teneo">
-        <ScrollToTop />
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <BrowserRouter>
           <Layout />
-        </ThemeProvider>
-      </BrowserRouter>
-    </AuthProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
-}
+};
 
 export default App; 
