@@ -14,7 +14,7 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={!isAuthenticated ? <Landing /> : <Navigate to="/dashboard" />} />
+      <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={!isAuthenticated ? <Onboarding /> : <Navigate to="/dashboard" />} />
 
       <Route

@@ -22,6 +22,7 @@ import {
   Payment as PaymentIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const DRAWER_WIDTH = 240;
 
@@ -37,6 +38,7 @@ const Sidebar = () => {
   const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { logout } = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -44,6 +46,14 @@ const Sidebar = () => {
 
   const handleMenuClick = (path: string) => {
     navigate(path);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
+  const handleLogoClick = () => {
+    logout();
+    navigate('/', { replace: true });
     if (isMobile) {
       setMobileOpen(false);
     }
@@ -66,7 +76,12 @@ const Sidebar = () => {
             height: 40,
             width: 'auto',
             mb: 1,
+            cursor: 'pointer',
+            '&:hover': {
+              opacity: 0.8
+            }
           }}
+          onClick={handleLogoClick}
         />
         <Typography 
           variant="subtitle2" 
@@ -132,7 +147,12 @@ const Sidebar = () => {
               sx={{
                 height: 32,
                 width: 'auto',
+                cursor: 'pointer',
+                '&:hover': {
+                  opacity: 0.8
+                }
               }}
+              onClick={handleLogoClick}
             />
           </Toolbar>
         </AppBar>
