@@ -6,6 +6,7 @@ import theme from './theme';
 import { AuthProvider } from './contexts/AuthContext';
 import AppRoutes from './routes';
 import Sidebar from './components/Sidebar';
+import ScrollToTop from './components/ScrollToTop';
 
 // サイドバーを表示しないパス
 const noSidebarPaths = ['/', '/onboarding'];
@@ -36,7 +37,8 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/teneo">
+          <ScrollToTop />
           <Layout />
         </BrowserRouter>
       </AuthProvider>

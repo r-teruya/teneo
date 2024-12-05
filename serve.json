@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/teneo/*",
+      "destination": "/teneo/index.html"
+    }
+  ]
+} 
