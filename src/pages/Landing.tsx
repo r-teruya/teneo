@@ -50,6 +50,16 @@ const Landing = () => {
       >
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', maxWidth: 800, mx: 'auto' }}>
+            <Box
+              component="img"
+              src="/teneo/images/teneo_logo.png"
+              alt="Teneo Logo"
+              sx={{
+                width: { xs: '160px', sm: '200px' },
+                height: 'auto',
+                mb: { xs: 4, sm: 5 },
+              }}
+            />
             <Typography 
               variant="h2" 
               component="h1"
@@ -74,6 +84,17 @@ const Landing = () => {
               最先端の運用戦略と徹底したリスク管理で、
               <br />
               お客様の大切な資産を守りながら成長させます。
+            </Typography>
+            <Typography 
+              variant="body1"
+              sx={{ 
+                mb: 2,
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                opacity: 0.8,
+                letterSpacing: 2,
+              }}
+            >
+              TAP
             </Typography>
             <Button
               variant="contained"
