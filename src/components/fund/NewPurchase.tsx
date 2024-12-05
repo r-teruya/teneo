@@ -40,7 +40,7 @@ const NewPurchase = () => {
     <Container maxWidth="lg">
       <Box sx={{ py: { xs: 2, sm: 3 }, mt: { xs: '64px', sm: 0 } }}>
         <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-          新規ファンド購入
+          ファンド一覧
         </Typography>
 
         <Grid container spacing={3}>
@@ -116,23 +116,13 @@ const NewPurchase = () => {
                         ¥{fund.minInvestment.toLocaleString()}
                       </Typography>
                     </Box>
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleShowDetails(fund.id)}
-                        startIcon={<InfoIcon />}
-                      >
-                        詳細
-                      </Button>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleSelectFund(fund.id)}
-                        endIcon={<ArrowForwardIcon />}
-                      >
-                        購入する
-                      </Button>
-                    </Stack>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleShowDetails(fund.id)}
+                      startIcon={<InfoIcon />}
+                    >
+                      詳細
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>

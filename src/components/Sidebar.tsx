@@ -28,6 +28,7 @@ const DRAWER_WIDTH = 240;
 
 const MENU_ITEMS = [
   { path: '/dashboard', label: 'ダッシュボード', icon: <DashboardIcon /> },
+  { path: '/funds', label: 'ファンド一覧', icon: <AccountBalanceIcon /> },
   { path: '/transactions', label: '取引履歴', icon: <HistoryIcon /> },
   { path: '/cash-transactions', label: '入出金', icon: <PaymentIcon /> },
 ];

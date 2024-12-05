@@ -22,6 +22,10 @@ const AppRoutes = () => {
         element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
       />
       <Route
+        path="/funds"
+        element={isAuthenticated ? <NewPurchase /> : <Navigate to="/" />}
+      />
+      <Route
         path="/funds/:fundId"
         element={isAuthenticated ? <FundDetail /> : <Navigate to="/" />}
       />

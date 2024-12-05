@@ -124,13 +124,14 @@ const FundList = () => {
           >
             解約
           </Button>
-          <IconButton
+          <Button
+            variant="text"
+            color="primary"
             size="small"
             onClick={() => handleShowDetails(fund.id)}
-            color="primary"
           >
-            <InfoIcon fontSize="small" />
-          </IconButton>
+            詳細
+          </Button>
         </Box>
       </Box>
     </Box>
@@ -148,6 +149,7 @@ const FundList = () => {
           alignItems: 'center',
           mb: 2,
           px: 2,
+          pt: 2,
         }}>
           <Typography 
             variant="h6"
@@ -258,14 +260,14 @@ const FundList = () => {
                         >
                           解約
                         </Button>
-                        <IconButton
-                          size={isMobile ? "small" : "medium"}
-                          onClick={() => handleShowDetails(fund.id)}
+                        <Button
+                          variant="text"
                           color="primary"
-                          sx={{ p: { xs: 0.5, sm: 1 } }}
+                          size="small"
+                          onClick={() => handleShowDetails(fund.id)}
                         >
-                          <InfoIcon fontSize={isMobile ? "small" : "medium"} />
-                        </IconButton>
+                          詳細
+                        </Button>
                       </Box>
                     </TableCell>
                   </TableRow>
